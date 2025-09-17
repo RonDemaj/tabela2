@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <title>Rezultatet e Ruajtura</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f9; padding: 20px; }
+    table { border-collapse: collapse; width: 600px; margin: 20px auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background: #007bff; color: white; }
+    h2 { text-align: center; }
+    .clear-btn { background: #dc3545; color: white; padding: 4px 8px; border: none; border-radius: 4px; cursor: pointer; }
+    .clear-btn:hover { background: #c82333; }
+    #grandTotals { margin-top: 30px; text-align: center; font-size: 18px; font-weight: bold; }
+    #grandTotals span { display: block; margin-top: 5px; }
+    #grandTotals .original { color: green; }
+  </style>
+</head>
+<body>
+
+    <!-- Lart faqes, përpara titullit -->
+<button onclick="window.location.href='index.html'" style="
+  padding: 8px 12px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 15px;
+">⬅️ Kthehu tek tabela kryesore</button>
+
+  <h2>Tabelat e Ruajtura</h2>
+  <div id="results"></div>
+
+  <h2>📊 Rezultati i Plotë</h2>
+  <div id="grandTotals"></div>
+
+  <script>
+    const ditetJaves = ["E Hënë", "E Martë", "E Mërkurë", "E Enjte", "E Premte", "E Shtunë", "E Diel"];
+    let allTables = JSON.parse(localStorage.getItem("allTables")) || [];
+    const resultsDiv = document.getElementById("results");
+    const grandTotalsDiv = document.getElementById("grandTotals");
+
+    let totalSumAll = 0;
+
+    allTables.forEach((table, index) => {
+      let sum = 0;
+      const tbl = document.createElement("table");
+
+      // Header
+      const thead = document.createElement("thead");
+      thead.innerHTML = `<tr><th colspan="2">Tabela #${index+1} (ruajtur më: ${table.savedAt})</th></tr>
+                         <tr><th>Dita</th><th>Numri i skeleve</th></tr>`;
+      tbl.appendChild(thead);
+
+      // Body
+      const tbody = document.createElement("tbody");
+      table.data.forEach((val, i) => {
+        const tr = document.createElement("tr");
+        const tdDay = document.createElement("td");
+        tdDay.textContent = ditetJaves[i % 7] + (i < 7 ? " (Java 1)" : " (Java 2)");
+        const tdVal = document.createElement("td");
+        tdVal.textContent = val !== "" ? val : "-";
+        tr.appendChild(tdDay);
+        tr.appendChild(tdVal);
+        tbody.appendChild(tr);
+        if(val !== "" && !isNaN(val)) sum += parseFloat(val);
+      });
+      tbl.appendChild(tbody);
+
+      // Footer
+      const tfoot = document.createElement("tfoot");
+      tfoot.innerHTML = `<tr><td colspan="2">
+                          Barazimi ×1.75: €${(sum*1.75).toFixed(2)} <br>
+                          Shuma: €${sum.toFixed(2)}
+                         </td></tr>`;
+      tbl.appendChild(tfoot);
+
+      // Butoni pastro
+      const btnDiv = document.createElement("div");
+      btnDiv.style.textAlign = "center";
+      btnDiv.style.marginTop = "5px";
+      btnDiv.innerHTML = `<button class="clear-btn" onclick="deleteTable(${index})">🗑️ Pastro këtë tabelë</button>`;
+
+      resultsDiv.appendChild(tbl);
+      resultsDiv.appendChild(btnDiv);
+
+      totalSumAll += sum;
+    });
+
+    // Totali i plotë
+    grandTotalsDiv.innerHTML = `
+      <span>💎 Totali i të gjitha tabelave ×1.75: €${(totalSumAll*1.75).toFixed(2)}</span>
+      <span class="original">📌 Totali i të gjitha tabelave: ${totalSumAll.toFixed(2)}</span>
+    `;
+
+    function deleteTable(index) {
+      if(confirm("A je i sigurt që do ta fshish këtë tabelë?")) {
+        allTables.splice(index, 1);
+        localStorage.setItem("allTables", JSON.stringify(allTables));
+        location.reload();
+      }
+    }
+
+  let grandTotal = parseFloat(localStorage.getItem("grandTotal")) || 0;
+grandTotalsDiv.innerHTML = `
+  <span>💎 Totali i të gjitha tabelave ×1.75: €${(grandTotal*1.75).toFixed(2)}</span>
+  <span class="original">📌 Totali i të gjitha tabelave: €${grandTotal.toFixed(2)}</span>
+`;
+
+  </script>
+</body>
+</html>
