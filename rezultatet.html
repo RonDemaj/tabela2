@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <title>Rezultatet</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #grandTotals {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    #grandTotals .original {
+      display: block;
+      margin-top: 10px;
+      color: green;
+      font-size: 18px;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .back-btn:hover {
+      background: #0056b3;
+    }
+    .clear-btn { background: #dc3545; color: white; }
+  </style>
+</head>
+<body>
+  <div id="grandTotals">
+    <span> Totali: €0.00</span>
+    <span class="original">Totali i te gjitha skeleve: €0.00</span>
+    <br>
+    <a href="index.html" class="back-btn">⬅ Kthehu mbrapa</a>
+  </div>
+
+  <script>
+    // Lexo grandTotal nga localStorage
+    let grandTotal = parseFloat(localStorage.getItem("grandTotal")) || 0;
+
+    document.getElementById("grandTotals").innerHTML = `
+      <span>Totali: ${(grandTotal*1.75).toFixed(2)}€</span>
+      <span class="original">Totali i te gjitha skeleve: ${grandTotal.toFixed(2)}</span>
+      <br>
+      <a href="index.html" class="back-btn">⬅ Kthehu mbrapa</a>
+    `;
+  </script>
+</body>
+</html>
